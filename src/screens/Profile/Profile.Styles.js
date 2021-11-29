@@ -9,13 +9,6 @@ const useStyles = () => {
       flex: 1,
       paddingTop: insets.top,
     },
-    leftIcon: {
-      marginRight: 5,
-    },
-    titleText: {
-      marginHorizontal: 5,
-      fontSize: 16,
-    },
     modalLogoutTitle: {
       color: '#000000',
       fontSize: 16,
@@ -30,9 +23,6 @@ const useStyles = () => {
     versionTextContainer: {
       margin: 15,
       alignItems: 'center',
-    },
-    emptySpace: {
-      height: 15,
     },
   });
 };

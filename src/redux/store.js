@@ -1,4 +1,4 @@
-import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
@@ -19,23 +19,22 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage: AsyncStorage,
-  whitelist: ['user', 'settings'],
+  whitelist: [
+    'user',
+    'settings',
+    'vouchers',
+    'points',
+    'stamps',
+    'orders',
+    'referrals',
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const sagaMiddleware = createSagaMiddleware();
 
-let middleware = [
-  ...getDefaultMiddleware({
-    thunk: false,
-    serializableCheck: {
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    },
-    immutableCheck: false,
-  }),
-  sagaMiddleware,
-];
+let middleware = [sagaMiddleware];
 
 if (__DEV__) {
   const logger = createLogger({
@@ -47,7 +46,16 @@ if (__DEV__) {
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware,
+  middleware: getDefaultMiddleware => [
+    ...getDefaultMiddleware({
+      thunk: false,
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+      immutableCheck: false,
+    }),
+    ...middleware,
+  ],
   devTools: process.env.NODE_ENV !== 'production',
 });
 

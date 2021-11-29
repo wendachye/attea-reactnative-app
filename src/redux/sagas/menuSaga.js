@@ -60,6 +60,7 @@ function* handleFetchMenu() {
 
       yield put(fetchMenu.success({categories}));
     } else {
+      console.log('fetchMenu', data);
       yield put(fetchMenu.failure());
     }
   } catch (error) {
@@ -82,6 +83,7 @@ function* handleFetchMenuByHashTag(action) {
 
       yield put(fetchMenuByHashtag.success({hashTagProducts}));
     } else {
+      console.log('fetchMenuByHashtag', data);
       yield put(fetchMenuByHashtag.failure());
     }
   } catch (error) {
@@ -117,6 +119,7 @@ function* handleFetchCondiment(action) {
 
       yield put(fetchCondiment.success({condiments}));
     } else {
+      console.log('fetchCondiment', data);
       yield put(fetchCondiment.failure());
     }
   } catch (error) {

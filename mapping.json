@@ -29,10 +29,8 @@
   },
   "components": {
     "Input": {
-      "meta": {},
       "appearances": {
         "default": {
-          "mapping": {},
           "variantGroups": {
             "status": {
               "basic": {
@@ -43,6 +41,9 @@
                   "focused": {
                     "borderColor": "color-primary-500",
                     "backgroundColor": "#FFFFFF"
+                  },
+                  "disabled": {
+                    "textColor": "text-hint-color"
                   }
                 }
               }
@@ -52,7 +53,6 @@
       }
     },
     "Calendar": {
-      "meta": {},
       "appearances": {
         "default": {
           "mapping": {
@@ -64,7 +64,6 @@
       }
     },
     "CalendarCell": {
-      "meta": {},
       "appearances": {
         "default": {
           "mapping": {
@@ -88,15 +87,12 @@
       }
     },
     "Datepicker": {
-      "meta": {},
       "appearances": {
         "default": {
-          "mapping": {},
           "variantGroups": {
             "status": {
               "basic": {
                 "textColor": "#000000",
-                "placeholderColor": "border-basic-color-5",
                 "borderColor": "border-basic-color-5",
                 "backgroundColor": "#FFFFFF",
                 "state": {
@@ -104,6 +100,9 @@
                     "borderColor": "color-primary-500",
                     "backgroundColor": "#FFFFFF",
                     "textColor": "#000000"
+                  },
+                  "disabled": {
+                    "textColor": "text-hint-color"
                   }
                 }
               }
@@ -113,7 +112,6 @@
       }
     },
     "Popover": {
-      "meta": {},
       "appearances": {
         "default": {
           "mapping": {
@@ -123,10 +121,8 @@
       }
     },
     "Select": {
-      "meta": {},
       "appearances": {
         "default": {
-          "mapping": {},
           "variantGroups": {
             "status": {
               "basic": {
@@ -136,6 +132,9 @@
                 "state": {
                   "active": {
                     "backgroundColor": "#FFFFFF"
+                  },
+                  "disabled": {
+                    "textColor": "text-hint-color"
                   }
                 }
               }
@@ -150,11 +149,34 @@
       }
     },
     "SelectOption": {
-      "meta": {},
       "appearances": {
         "default": {
           "mapping": {
             "backgroundColor": "#FFFFFF"
+          }
+        }
+      }
+    },
+    "Button": {
+      "appearances": {
+        "filled": {
+          "variantGroups": {
+            "status": {
+              "primary": {
+                "state": {
+                  "disabled": {
+                    "textColor": "text-hint-color"
+                  }
+                }
+              },
+              "control": {
+                "state": {
+                  "disabled": {
+                    "textColor": "#d3d3d3"
+                  }
+                }
+              }
+            }
           }
         }
       }

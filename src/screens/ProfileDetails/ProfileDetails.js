@@ -12,18 +12,16 @@ import {
   NativeDateService,
   Spinner,
 } from '@ui-kitten/components';
-import {useSelector} from 'react-redux';
 import {useForm, Controller} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {updateUser} from '@redux/slices/userSlice';
+import updateProfileAPI from '@apis/updateProfile';
 import Header from '@components/Header/Header';
 import Modal from '@components/Modal/Modal';
 import useGlobalStyles from '@styles/styles';
 import useStyles from './ProfileDetails.Styles';
-
-import useHttpClient from '@hooks/useHttpClient';
 
 const gender = ['Male', 'Female'];
 const formatDateService = new NativeDateService('en', {format: 'DD MMM YYYY'});
@@ -36,7 +34,7 @@ const ProfileDetails = props => {
   const {navigation} = props;
   const globalStyles = useGlobalStyles();
   const styles = useStyles();
-  const {user} = useSelector(state => state.user);
+  const {user, accessToken} = useSelector(state => state.user);
   const {control, handleSubmit, formState} = useForm({
     mode: 'onChange',
     resolver: yupResolver(formSchema),
@@ -47,51 +45,45 @@ const ProfileDetails = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalButton, setModalButton] = useState('Try Again');
-  const {POST} = useHttpClient({userOAuthToken: true});
 
   const onPressBackButton = () => {
     navigation.goBack();
   };
 
   const updateProfile = async formData => {
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const params = {
-        cu_id: user.id,
-        cu_email: formData.email,
-        cu_firstname: formData.firstName,
-        cu_lastname: formData.lastName,
+    const params = {
+      cu_id: user.id,
+      cu_email: user.email,
+      cu_firstname: formData.firstName,
+      cu_lastname: formData.lastName,
+    };
+
+    const [data] = await updateProfileAPI(accessToken.access_token, params);
+
+    if (data?.code === 1008) {
+      const payload = {
+        user: {
+          firstName: params.cu_firstname,
+          lastName: params.cu_lastname,
+        },
       };
 
-      const {data} = await POST('/customer/updateProfile', params);
+      dispatch(updateUser.trigger(payload));
 
-      if (data?.code === 1008) {
-        const payload = {
-          user: {
-            firstName: params.cu_firstname,
-            lastName: params.cu_lastname,
-          },
-        };
-
-        dispatch(updateUser.trigger(payload));
-        setModalMessage('Profile successfully updated');
-        setModalButton('Ok');
-        setModalVisible(true);
-        return;
-      }
-
-      setModalMessage('Something went wrong');
-      setModalButton('Try Again');
+      setModalMessage('Profile successfully updated');
+      setModalButton('Ok');
       setModalVisible(true);
-    } catch (error) {
-      console.log('updateProfile', error);
-      setModalMessage('Something went wrong');
-      setModalButton('Try Again');
-      setModalVisible(true);
-    } finally {
       setLoading(false);
+
+      return;
     }
+
+    setModalMessage('Something went wrong');
+    setModalButton('Try Again');
+    setModalVisible(true);
+    setLoading(false);
   };
 
   const loadingIndicator = accessoryLeftProps => {
@@ -129,7 +121,9 @@ const ProfileDetails = props => {
                 return (
                   <View style={styles.inputContainer}>
                     <Input
-                      label={<Text category="c1">First Name</Text>}
+                      label={evaProps => (
+                        <Text style={styles.label}>First Name</Text>
+                      )}
                       placeholder="First Name"
                       value={value}
                       onChange={onChange}
@@ -156,7 +150,9 @@ const ProfileDetails = props => {
                 return (
                   <View style={styles.inputContainer}>
                     <Input
-                      label={<Text category="c1">Last Name</Text>}
+                      label={evaProps => (
+                        <Text style={styles.label}>Last Name</Text>
+                      )}
                       placeholder="Last Name"
                       value={value}
                       onChange={onChange}
@@ -184,7 +180,9 @@ const ProfileDetails = props => {
                   <View style={styles.inputContainer}>
                     <Input
                       disabled
-                      label={<Text category="c1">Phone Number</Text>}
+                      label={evaProps => (
+                        <Text style={styles.label}>Phone Number</Text>
+                      )}
                       placeholder="Phone Number"
                       value={value}
                     />
@@ -201,7 +199,9 @@ const ProfileDetails = props => {
                   <View style={styles.inputContainer}>
                     <Input
                       disabled
-                      label={<Text category="c1">Email Address</Text>}
+                      label={evaProps => (
+                        <Text style={styles.label}>Email Address</Text>
+                      )}
                       placeholder="Email Address"
                       value={value}
                     />
@@ -218,7 +218,9 @@ const ProfileDetails = props => {
                   <View style={styles.inputContainer}>
                     <Select
                       disabled
-                      label={<Text category="c1">Gender</Text>}
+                      label={evaProps => (
+                        <Text style={styles.label}>Gender</Text>
+                      )}
                       placeholder={'Gender'}
                       selectedIndex={selectedGenderIndex}
                       value={value}
@@ -238,11 +240,11 @@ const ProfileDetails = props => {
                       {gender.map((title, index) => (
                         <SelectItem
                           key={index}
-                          title={
+                          title={evaProps => (
                             <Text status="primary" category="s1">
                               {title}
                             </Text>
-                          }
+                          )}
                         />
                       ))}
                     </Select>
@@ -259,8 +261,12 @@ const ProfileDetails = props => {
                   <View style={styles.inputContainer}>
                     <Datepicker
                       disabled
-                      label={<Text category="c1">Date of Birth</Text>}
-                      placeholder={<Text appearance="hint">Date of Birth</Text>}
+                      label={evaProps => (
+                        <Text style={styles.label}>Date of Birth</Text>
+                      )}
+                      placeholder={evaProps => (
+                        <Text appearance="hint">Date of Birth</Text>
+                      )}
                       date={value}
                       onSelect={newDate => {
                         onChange(newDate);
@@ -273,7 +279,7 @@ const ProfileDetails = props => {
                       caption={
                         error && (
                           <View style={styles.errorTextContainer}>
-                            <Text style={styles.errorText} category="c1">
+                            <Text status="danger" category="c1">
                               {'error.message'}
                             </Text>
                           </View>
@@ -285,7 +291,7 @@ const ProfileDetails = props => {
               }}
             />
             <Button
-              status="basic"
+              status="control"
               style={styles.updateButton}
               disabled={loading || !formState.isValid || formState.isSubmitting}
               accessoryLeft={

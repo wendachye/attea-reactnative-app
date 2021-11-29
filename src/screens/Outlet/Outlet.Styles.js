@@ -39,6 +39,10 @@ const useStyles = () => {
       color: '#000000',
       fontSize: 14,
     },
+    subtitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
   });
 };
 

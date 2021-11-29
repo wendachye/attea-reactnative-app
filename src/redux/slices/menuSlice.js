@@ -17,11 +17,11 @@ export const clearCondiment = createRoutine(`${name}/clearCondiment`);
 export const selectCondiment = createRoutine(`${name}/selectCondiment`);
 
 const isRequestAction = action => {
-  return action.type.endsWith('REQUEST');
+  return action.type.startsWith(name) && action.type.endsWith('REQUEST');
 };
 
 const isFullfillAction = action => {
-  return action.type.endsWith('FULFILL');
+  return action.type.startsWith(name) && action.type.endsWith('FULFILL');
 };
 
 export const menuSlice = createSlice({

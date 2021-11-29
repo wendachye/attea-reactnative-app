@@ -1,7 +1,5 @@
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {View, ScrollView} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Layout, Text, Button} from '@ui-kitten/components';
 import {useSelector, useDispatch} from 'react-redux';
 import {logout} from '@redux/slices/userSlice';
@@ -13,181 +11,13 @@ import useGlobalStyles from '@styles/styles';
 import useStyle from './Profile.Styles';
 import packageJson from '../../../package.json';
 
-const Profile = ({navigation}) => {
+const Profile = props => {
+  const {navigation} = props;
   const styles = useStyle();
   const globalStyles = useGlobalStyles();
   const dispatch = useDispatch();
   const {isLoggedIn} = useSelector(state => state.user);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const profileListItem = useMemo(() => {
-    let profileList = [];
-
-    if (isLoggedIn) {
-      profileList = [
-        ...profileList,
-        {
-          title: () => <Text style={styles.titleText}>Personal Details</Text>,
-          leftIcon: () => (
-            <MaterialCommunityIcons
-              name={'account'}
-              size={28}
-              color={'#FFFFFF'}
-              style={styles.leftIcon}
-            />
-          ),
-          rightIcon: () => (
-            <MaterialCommunityIcons
-              name={'chevron-right'}
-              size={24}
-              color={'#FFFFFF'}
-            />
-          ),
-          onPress: () => {
-            navigation.navigate('profile-details');
-          },
-        },
-        // {
-        //   title: () => <Text style={styles.titleText}>My Voucher</Text>,
-        //   leftIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'ticket-percent'}
-        //       size={28}
-        //       color={'#FFFFFF'}
-        //       style={styles.leftIcon}
-        //     />
-        //   ),
-        //   rightIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'chevron-right'}
-        //       size={24}
-        //       color={'#FFFFFF'}
-        //     />
-        //   ),
-        //   onPress: () => {
-        //     navigation.navigate('test');
-        //   },
-        // },
-        // {
-        //   title: () => <Text style={styles.titleText}>My Points</Text>,
-        //   leftIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'qrcode-scan'}
-        //       size={28}
-        //       color={'#FFFFFF'}
-        //       style={styles.leftIcon}
-        //     />
-        //   ),
-        //   rightIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'chevron-right'}
-        //       size={24}
-        //       color={'#FFFFFF'}
-        //     />
-        //   ),
-        //   onPress: () => {
-        //     navigation.navigate('test');
-        //   },
-        // },
-        // {
-        //   title: () => <Text style={styles.titleText}>Digital Stamp</Text>,
-        //   leftIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'postage-stamp'}
-        //       size={28}
-        //       color={'#FFFFFF'}
-        //       style={styles.leftIcon}
-        //     />
-        //   ),
-        //   rightIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'chevron-right'}
-        //       size={24}
-        //       color={'#FFFFFF'}
-        //     />
-        //   ),
-        //   onPress: () => {
-        //     navigation.navigate('test');
-        //   },
-        // },
-        // {
-        //   title: () => <Text style={styles.titleText}>Order History</Text>,
-        //   leftIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'history'}
-        //       size={28}
-        //       color={'#FFFFFF'}
-        //       style={styles.leftIcon}
-        //     />
-        //   ),
-        //   rightIcon: () => (
-        //     <MaterialCommunityIcons
-        //       name={'chevron-right'}
-        //       size={24}
-        //       color={'#FFFFFF'}
-        //     />
-        //   ),
-        //   onPress: () => {
-        //     navigation.navigate('test');
-        //   },
-        // },
-      ];
-    }
-
-    profileList = [
-      ...profileList,
-      {
-        title: () => <Text style={styles.titleText}>Settings</Text>,
-        leftIcon: () => (
-          <MaterialIcons
-            name={'settings'}
-            size={28}
-            color={'#FFFFFF'}
-            style={styles.leftIcon}
-          />
-        ),
-        rightIcon: () => (
-          <MaterialCommunityIcons
-            name={'chevron-right'}
-            size={24}
-            color={'#FFFFFF'}
-          />
-        ),
-        onPress: () => {
-          navigation.navigate('settings');
-        },
-      },
-    ];
-
-    if (isLoggedIn) {
-      profileList = [
-        ...profileList,
-        {
-          title: () => <Text style={styles.titleText}>Log Out</Text>,
-          leftIcon: () => (
-            <MaterialCommunityIcons
-              name={'logout'}
-              size={28}
-              color={'#FFFFFF'}
-              style={styles.leftIcon}
-            />
-          ),
-          rightIcon: () => (
-            <MaterialCommunityIcons
-              name={'chevron-right'}
-              size={24}
-              color={'#FFFFFF'}
-            />
-          ),
-          onPress: () => {
-            setModalVisible(true);
-          },
-        },
-      ];
-    }
-
-    return profileList;
-  }, [isLoggedIn, styles, navigation]);
 
   const onPressLogout = () => {
     setModalVisible(false);
@@ -211,12 +41,62 @@ const Profile = ({navigation}) => {
   return (
     <Layout style={styles.container}>
       <Header />
-      {!isLoggedIn && <Subheader />}
+      <Subheader />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.emptySpace} />
-        {profileListItem.map((item, index) => {
-          return <ProfileItem key={index} item={item} />;
-        })}
+        {isLoggedIn && (
+          <>
+            <ProfileItem
+              title="Personal Details"
+              leftIcon="account"
+              rightIcon="chevron-right"
+              onPressItem={() => navigation.navigate('profile-details')}
+            />
+            <ProfileItem
+              title="My Voucher"
+              leftIcon="ticket-percent"
+              rightIcon="chevron-right"
+              onPressItem={() => navigation.jumpTo('voucher')}
+            />
+            <ProfileItem
+              title="My Points"
+              leftIcon="qrcode-scan"
+              rightIcon="chevron-right"
+              onPressItem={() => navigation.navigate('point-history')}
+            />
+            <ProfileItem
+              title="Digital Stamp"
+              leftIcon="postage-stamp"
+              rightIcon="chevron-right"
+              onPressItem={() => navigation.navigate('digital-stamp')}
+            />
+            <ProfileItem
+              title="Order History"
+              leftIcon="history"
+              rightIcon="chevron-right"
+              onPressItem={() => navigation.navigate('order-history')}
+            />
+            <ProfileItem
+              title="Invite Friends"
+              leftIcon="account-multiple-plus"
+              rightIcon="chevron-right"
+              onPressItem={() => navigation.navigate('invite-friends')}
+            />
+          </>
+        )}
+        <ProfileItem
+          title="Settings"
+          leftIcon="settings"
+          rightIcon="chevron-right"
+          onPressItem={() => navigation.navigate('settings')}
+        />
+        {isLoggedIn && (
+          <ProfileItem
+            title="Log Out"
+            leftIcon="logout"
+            rightIcon="chevron-right"
+            onPressItem={() => setModalVisible(true)}
+          />
+        )}
         <View style={globalStyles.flexCenter}>
           <View style={styles.versionTextContainer}>
             <Text category="c1" status="basic">

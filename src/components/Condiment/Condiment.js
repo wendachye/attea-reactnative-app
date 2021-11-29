@@ -2,17 +2,17 @@ import React, {memo} from 'react';
 import PropTypes from 'prop-types';
 import {View} from 'react-native';
 import {Text, CheckBox} from '@ui-kitten/components';
-import useGloabalStyles from '@styles/styles';
+import useGlobalStyles from '@styles/styles';
 import useStyles from './Condiment.Styles';
 
 const Condiment = props => {
-  const gloabalStyles = useGloabalStyles();
+  const globalStyles = useGlobalStyles();
   const styles = useStyles();
   const {condiment, checked, onChange} = props;
 
   return (
     <View>
-      <View style={gloabalStyles.flexDirectionRowAlignCenter}>
+      <View style={globalStyles.flexDirectionRowAlignCenter}>
         <View style={styles.condimentContainer}>
           <CheckBox
             checked={checked}

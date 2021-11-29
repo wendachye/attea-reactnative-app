@@ -20,11 +20,11 @@ export const fetchAnnouncements = createRoutine(`${name}/fetchAnnouncements`);
 export const setLanguage = createRoutine(`${name}/setLanguage`);
 
 const isRequestAction = action => {
-  return action.type.endsWith('REQUEST');
+  return action.type.startsWith(name) && action.type.endsWith('REQUEST');
 };
 
 const isFullfillAction = action => {
-  return action.type.endsWith('FULFILL');
+  return action.type.startsWith(name) && action.type.endsWith('FULFILL');
 };
 
 export const settingSlice = createSlice({

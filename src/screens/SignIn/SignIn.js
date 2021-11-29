@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {View, ImageBackground, Image, TouchableOpacity} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useForm, Controller} from 'react-hook-form';
 import * as yup from 'yup';
@@ -10,13 +9,10 @@ import {Input, Button, Text, Spinner} from '@ui-kitten/components';
 import {setUser} from '@redux/slices/userSlice';
 import Header from '@components/Header/Header';
 import Modal from '@components/Modal/Modal';
-import HttpClient from '@utils/httpClient';
-import useGloabalStyles from '@styles/styles';
+import signInAPI from '@apis/signIn';
+import useGlobalStyles from '@styles/styles';
 import useStyles from './SignIn.Styles';
 
-const httpClient = HttpClient({
-  defaultBasicAuth: true,
-});
 const formSchema = yup.object().shape({
   phoneNo: yup
     .string()
@@ -28,7 +24,7 @@ const formSchema = yup.object().shape({
 const SignIn = props => {
   const {navigation} = props;
   const dispatch = useDispatch();
-  const gloabalStyles = useGloabalStyles();
+  const globalStyles = useGlobalStyles();
   const styles = useStyles();
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -43,55 +39,49 @@ const SignIn = props => {
   };
 
   const onPressForgotPassword = () => {
-    navigation.navigate('forgot-password');
+    navigation.navigate('forget-password');
   };
 
   const signIn = async formData => {
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const params = {
-        mobile: formData.phoneNo,
-        password: formData.password,
+    const params = {
+      mobile: formData.phoneNo,
+      password: formData.password,
+    };
+
+    const [data] = await signInAPI(params);
+
+    setLoading(false);
+
+    if (data?.code === 2005) {
+      setModalMessage('Incorret phone Number or password');
+      setModalVisible(true);
+      return;
+    }
+
+    if (data?.code === 3001) {
+      const payload = {
+        user: {
+          id: data.cu_id,
+          firstName: data.cu_firstname,
+          lastName: data.cu_lastname,
+          email: data.cu_email,
+          phoneNo: data.cu_mobile,
+          gender: data.cu_gender,
+          dateOfBirth: data.cu_dob,
+          totalPoints: data.total_points,
+        },
+        accessToken: {...data.data},
       };
 
-      const {data} = await httpClient.post('/customer/login', params);
-
-      if (data?.code === 3001) {
-        const payload = {
-          user: {
-            id: data.cu_id,
-            firstName: data.cu_firstname,
-            lastName: data.cu_lastname,
-            email: data.cu_email,
-            phoneNo: data.cu_mobile,
-            gender: data.cu_gender,
-            dateOfBirth: data.cu_dob,
-            totalPoints: data.total_points,
-          },
-          accessToken: {...data.data},
-        };
-
-        dispatch(setUser.trigger(payload));
-        navigation.goBack();
-        return;
-      }
-
-      if (data?.code === 2005) {
-        setModalMessage('Incorret phone Number or password');
-        setModalVisible(true);
-        return;
-      }
-
-      setModalMessage('Something went wrong');
-      setModalVisible(true);
-    } catch (error) {
-      console.log('signIn', error);
-      setModalMessage('Something went wrong');
-      setModalVisible(true);
-    } finally {
-      setLoading(false);
+      dispatch(setUser.trigger(payload));
+      navigation.goBack();
+      return;
     }
+
+    setModalMessage('Something went wrong');
+    setModalVisible(true);
   };
 
   const loadingIndicator = accessoryLeftProps => {
@@ -114,10 +104,10 @@ const SignIn = props => {
   };
 
   return (
-    <SafeAreaView style={gloabalStyles.flex}>
+    <View style={globalStyles.containerModal}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={gloabalStyles.flexGrow}>
+        contentContainerStyle={globalStyles.flexGrow}>
         <ImageBackground
           source={require('@assets/images/Background-SignIn.png')}
           style={styles.backgroundImage}>
@@ -125,6 +115,7 @@ const SignIn = props => {
             type="modal"
             color="secondary"
             isCloseButton
+            closeButtonPosition="right"
             onPressCloseButton={onPressCloseButton}
           />
           <View style={styles.logoImageContainer}>
@@ -142,6 +133,13 @@ const SignIn = props => {
                 return (
                   <View style={styles.inputContainer}>
                     <Input
+                      label={evaProps =>
+                        !!value && (
+                          <Text status="primary" style={styles.label}>
+                            Phone Number
+                          </Text>
+                        )
+                      }
                       placeholder="Phone Number"
                       value={value}
                       onChange={onChange}
@@ -169,6 +167,13 @@ const SignIn = props => {
                   <View style={styles.inputContainer}>
                     <Input
                       secureTextEntry
+                      label={evaProps =>
+                        !!value && (
+                          <Text status="primary" style={styles.label}>
+                            Password
+                          </Text>
+                        )
+                      }
                       placeholder="Password"
                       value={value}
                       onChange={onChange}
@@ -207,7 +212,7 @@ const SignIn = props => {
           {renderModal()}
         </ImageBackground>
       </KeyboardAwareScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

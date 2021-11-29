@@ -55,6 +55,12 @@ const useStyles = () => {
       paddingLeft: insets.left,
       paddingRight: insets.right,
     },
+    containerModal: {
+      flex: 1,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+    },
   });
 };
 

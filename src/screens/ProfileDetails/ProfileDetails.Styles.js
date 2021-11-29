@@ -3,8 +3,9 @@ import {StyleSheet} from 'react-native';
 const useStyles = () => {
   return StyleSheet.create({
     container: {
-      marginHorizontal: 20,
-      marginVertical: 15,
+      flex: 1,
+      paddingHorizontal: 20,
+      paddingTop: 15,
     },
     formContainer: {
       marginHorizontal: 15,
@@ -16,7 +17,9 @@ const useStyles = () => {
       paddingTop: 5,
     },
     errorText: {
-      color: '#990000',
+      fontSize: 11,
+      lineHeight: 20,
+      color: '#CC0000',
     },
     updateButton: {
       marginVertical: 10,
@@ -27,6 +30,11 @@ const useStyles = () => {
       fontWeight: '500',
       lineHeight: 20,
       marginBottom: 20,
+    },
+    label: {
+      fontSize: 11,
+      lineHeight: 20,
+      paddingLeft: 3,
     },
   });
 };

@@ -54,6 +54,23 @@ const useStyles = () => {
       lineHeight: 20,
       marginBottom: 20,
     },
+    label: {
+      fontSize: 11,
+      lineHeight: 20,
+      paddingLeft: 3,
+    },
+    labelOTP: {
+      fontSize: 14,
+      fontWeight: 'bold',
+      paddingBottom: 5,
+      lineHeight: 20,
+    },
+    resendOtpContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
   });
 };
 

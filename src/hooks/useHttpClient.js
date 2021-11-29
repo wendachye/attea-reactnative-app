@@ -7,7 +7,21 @@ import {
   API_GUEST_OAUTH_TOKEN,
 } from '@env';
 import {useSelector, useDispatch} from 'react-redux';
-import {updateAccessToken} from '@redux/slices/userSlice';
+import {fetchAccessToken} from '@redux/slices/userSlice';
+
+/**
+ *
+ * @param {object} props configs object to create axios instance
+ * @param {string} props.baseURL base url
+ * @param {number} props.timeout timeout
+ * @param {boolean} props.defaultBasicAuth indicate to use default Basic Authentication
+ * @param {boolean} props.guestOAuthToken indicate to use guest OAuth Token
+ * @param {object} props.basicAuth Basic Authentication
+ * @param {object} props.oauthToken OAuth Token
+ *
+ * @return {AxiosInstance} axios instance
+ *
+ */
 
 const METHOD_GET = 'GET';
 const METHOD_POST = 'POST';
@@ -70,10 +84,11 @@ const useHttpClient = props => {
     } catch (error) {
       console.log('useHttpClient GET', error);
 
-      if (error?.response?.status === 401) {
-        if (error?.response?.data?.code === 2002) {
-          return refreshToken(METHOD_GET, url);
-        }
+      if (
+        error?.response?.status === 401 &&
+        error?.response?.data?.code === 2002
+      ) {
+        return refreshToken(METHOD_GET, url);
       }
 
       throw error;
@@ -86,10 +101,11 @@ const useHttpClient = props => {
     } catch (error) {
       console.log('useHttpClient POST', error);
 
-      if (error?.response?.status === 401) {
-        if (error?.response?.data?.code === 2002) {
-          return refreshToken(METHOD_POST, url, params);
-        }
+      if (
+        error?.response?.status === 401 &&
+        error?.response?.data?.code === 2002
+      ) {
+        return refreshToken(METHOD_POST, url, params);
       }
 
       throw error;
@@ -102,10 +118,11 @@ const useHttpClient = props => {
     } catch (error) {
       console.log('useHttpClient PUT', error);
 
-      if (error?.response?.status === 401) {
-        if (error?.response?.data?.code === 2002) {
-          return refreshToken(METHOD_PUT, url, params);
-        }
+      if (
+        error?.response?.status === 401 &&
+        error?.response?.data?.code === 2002
+      ) {
+        return refreshToken(METHOD_PUT, url, params);
       }
 
       throw error;
@@ -118,10 +135,11 @@ const useHttpClient = props => {
     } catch (error) {
       console.log('useHttpClient DELETE', error);
 
-      if (error?.response?.status === 401) {
-        if (error?.response?.data?.code === 2002) {
-          return refreshToken(METHOD_DELETE, url);
-        }
+      if (
+        error?.response?.status === 401 &&
+        error?.response?.data?.code === 2002
+      ) {
+        return refreshToken(METHOD_DELETE, url);
       }
 
       throw error;
@@ -132,7 +150,7 @@ const useHttpClient = props => {
     try {
       const {data} = await fetchRefreshToken(accessToken.refresh_token);
       setOAuthHeader(data?.access_token);
-      dispatch(updateAccessToken.trigger({accessToken: data}));
+      dispatch(fetchAccessToken.trigger({accessToken: data}));
 
       switch (method) {
         case METHOD_GET:

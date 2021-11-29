@@ -1,12 +1,6 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {
-  View,
-  SectionList,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
+import {View, SectionList, RefreshControl} from 'react-native';
 import sectionListGetItemLayout from 'react-native-section-list-get-item-layout';
-import FastImage from 'react-native-fast-image';
 import {
   Layout,
   Text,
@@ -18,15 +12,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import SectionHeader from '@components/SectionHeader/SectionHeader';
 import Header from '@components/Header/Header';
 import Subheader from '@components/Subheader/Subheader';
+import MenuItem from '@components/MenuItem/MenuItem';
 import {fetchMenu} from '@redux/slices/menuSlice';
-import useGloabalStyles from '@styles/styles';
 import useStyles from './Menu.Styles';
 
 const ITEM_HEIGHT = 180;
 const ITEM_HEADER_HEIGHT = 35;
 
 const Menu = ({navigation}) => {
-  const gloabalStyles = useGloabalStyles();
   const styles = useStyles();
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(
     new IndexPath(0),
@@ -84,57 +77,12 @@ const Menu = ({navigation}) => {
     }
   };
 
-  const onPressItem = item => {
-    navigation.navigate('item', item);
-  };
-
-  const renderItem = ({item}) => {
-    return (
-      <View
-        style={[
-          styles.itemContainer,
-          {
-            height: ITEM_HEIGHT,
-          },
-        ]}>
-        <TouchableOpacity
-          style={gloabalStyles.flex}
-          activeOpacity={0.7}
-          onPress={() => onPressItem(item)}>
-          <View style={styles.itemInnerContainer}>
-            <View style={gloabalStyles.flexDirectionRow}>
-              <FastImage
-                source={{uri: item.img_file?.[0]}}
-                style={styles.itemImage}
-                resizeMode={FastImage.resizeMode.contain}
-                fallback
-                defaultSource={require('@assets/images/Image-Placeholder.png')}
-              />
-              <View style={gloabalStyles.flex}>
-                <Text
-                  numberOfLines={3}
-                  status="primary"
-                  style={styles.itemTitleText}>
-                  {item.prod_name}
-                </Text>
-                {!!item.prod_desc && (
-                  <Text
-                    appearance="hint"
-                    numberOfLines={2}
-                    style={styles.itemDescriptionText}>
-                    {item.prod_desc}
-                  </Text>
-                )}
-                <Text status="primary" style={styles.itemPriceText}>
-                  {`$ ${item.prod_price}`}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  const onPressItem = useCallback(
+    item => {
+      navigation.navigate('item', item);
+    },
+    [navigation],
+  );
 
   return (
     <Layout style={styles.container}>
@@ -155,11 +103,11 @@ const Menu = ({navigation}) => {
             return (
               <SelectItem
                 key={index}
-                title={
+                title={evaProps => (
                   <Text status="primary" category="s1">
                     {item.title}
                   </Text>
-                }
+                )}
               />
             );
           })}
@@ -173,7 +121,13 @@ const Menu = ({navigation}) => {
         }
         sections={categories}
         keyExtractor={(item, index) => item + index}
-        renderItem={renderItem}
+        renderItem={({item}) => (
+          <MenuItem
+            item={item}
+            itemHeight={ITEM_HEIGHT}
+            onPressItem={onPressItem}
+          />
+        )}
         renderSectionHeader={({section: {title}}) => (
           <SectionHeader title={title} />
         )}
@@ -182,6 +136,7 @@ const Menu = ({navigation}) => {
         removeClippedSubviews
         initialNumToRender={5}
         maxToRenderPerBatch={5}
+        windowSize={11}
         showsVerticalScrollIndicator={false}
       />
     </Layout>

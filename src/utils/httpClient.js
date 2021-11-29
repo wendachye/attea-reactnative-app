@@ -7,6 +7,20 @@ import {
   API_GUEST_OAUTH_TOKEN,
 } from '@env';
 
+/**
+ *
+ * @param {object} props configs object to create axios instance
+ * @param {string} props.baseURL base url
+ * @param {number} props.timeout timeout
+ * @param {boolean} props.defaultBasicAuth indicate to use default Basic Authentication
+ * @param {boolean} props.guestOAuthToken indicate to use guest OAuth Token
+ * @param {object} props.basicAuth Basic Authentication
+ * @param {object} props.oauthToken OAuth Token
+ *
+ * @return {AxiosInstance} axios instance
+ *
+ */
+
 const httpClient = props => {
   let configs = {
     baseURL: props?.baseURL ? props.baseURL : API_BASE_URL,
@@ -45,7 +59,7 @@ const httpClient = props => {
   if (configs.basicAuth) {
     instance.defaults.headers.common = {
       Authorization: `Basic ${btoa(
-        configs.basicAuth.username + ':' + configs.basicAuth.password,
+        configs.basicAuth?.username + ':' + configs.basicAuth?.password,
       )}`,
     };
   }

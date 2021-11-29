@@ -15,10 +15,11 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
-        name="home"
+        name="drawer"
         component={MainStackNavigator}
         options={({route}) => {
           return {
+            headerShown: false,
             gestureEnabled: getGestureEnabled(route),
           };
         }}

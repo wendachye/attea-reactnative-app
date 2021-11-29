@@ -4,9 +4,12 @@ const styles = StyleSheet.create({
   listItem: {
     paddingHorizontal: 20,
   },
-  divider: {
-    borderColor: '#EFEFF4',
-    borderBottomWidth: 1,
+  titleText: {
+    marginHorizontal: 5,
+    fontSize: 16,
+  },
+  icon: {
+    marginRight: 5,
   },
 });
 

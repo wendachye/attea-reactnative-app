@@ -13,14 +13,15 @@ const initialState = {
 export const setUser = createRoutine(`${name}/setUser`);
 export const updateUser = createRoutine(`${name}/updateUser`);
 export const logout = createRoutine(`${name}/logout`);
+export const fetchAccessToken = createRoutine(`${name}/fetchAccessToken`);
 export const updateAccessToken = createRoutine(`${name}/updateAccessToken`);
 
 const isRequestAction = action => {
-  return action.type.endsWith('REQUEST');
+  return action.type.startsWith(name) && action.type.endsWith('REQUEST');
 };
 
 const isFullfillAction = action => {
-  return action.type.endsWith('FULFILL');
+  return action.type.startsWith(name) && action.type.endsWith('FULFILL');
 };
 
 export const userSlice = createSlice({
@@ -39,9 +40,13 @@ export const userSlice = createSlice({
         state.user = {...state.user, ...user};
       })
       .addCase(logout.SUCCESS, (state, action) => {
+        state.isLoggedIn = false;
         state.user = null;
         state.accessToken = null;
-        state.isLoggedIn = false;
+      })
+      .addCase(fetchAccessToken.SUCCESS, (state, action) => {
+        const {accessToken} = action.payload;
+        state.accessToken = accessToken;
       })
       .addCase(updateAccessToken.SUCCESS, (state, action) => {
         const {accessToken} = action.payload;

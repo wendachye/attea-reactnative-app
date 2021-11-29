@@ -1,8 +1,10 @@
-import React, {useEffect, useCallback} from 'react';
-import {View, ScrollView} from 'react-native';
+import React, {useEffect, useCallback, useState} from 'react';
+import {View, TouchableOpacity} from 'react-native';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import FastImage from 'react-native-fast-image';
-import {Layout, Text, Divider} from '@ui-kitten/components';
+import {Layout, Text, Divider, Button} from '@ui-kitten/components';
 import {useDispatch, useSelector} from 'react-redux';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CloseButton from '@components/CloseButton/CloseButton';
 import Condiment from '@components/Condiment/Condiment';
 import {
@@ -10,17 +12,19 @@ import {
   selectCondiment,
   clearCondiment,
 } from '@redux/slices/menuSlice';
-import useGloabalStyles from '@styles/styles';
-import styles from './Item.Styles';
+import useGlobalStyles from '@styles/styles';
+import useStyles from './Item.Styles';
 
 const Item = props => {
   const {
     navigation,
     route: {params: item},
   } = props;
-  const gloabalStyles = useGloabalStyles();
+  const globalStyles = useGlobalStyles();
+  const styles = useStyles();
   const dispatch = useDispatch();
   const {condiments} = useSelector(state => state.menu);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     dispatch(fetchCondiment.trigger({productId: item.prod_id}));
@@ -38,12 +42,29 @@ const Item = props => {
     [dispatch],
   );
 
+  const onPressMinusQuantity = () => {
+    if (quantity !== 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const onPressAddQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const onPressAddToCart = () => {
+    dispatch(clearCondiment.success());
+    navigation.goBack();
+  };
+
   const renderCondimentGroup = (condimentGroup, index) => {
     return (
       <View key={index} style={styles.condimentGroupContainer}>
-        <View style={gloabalStyles.flexDirectionRowAlignCenter}>
+        <View style={globalStyles.flexDirectionRowAlignCenter}>
           <View style={styles.condimentGroupNameContainer}>
-            <Text category="h5">{condimentGroup.con_name}</Text>
+            <Text style={styles.condimentGroupTitle}>
+              {condimentGroup.con_name}
+            </Text>
             {Number(condimentGroup.con_max_select) !== 0 && (
               <View style={styles.condimentSelectTextContainer}>
                 <Text category="c1">
@@ -73,43 +94,93 @@ const Item = props => {
   };
 
   return (
-    <Layout style={gloabalStyles.container}>
-      <CloseButton shadow position="right" onPress={onPressClose} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <FastImage
-          source={{
-            uri: item.img_file?.[0],
-          }}
-          style={styles.itemImage}
-          resizeMode={FastImage.resizeMode.contain}
-          fallback
-          defaultSource={require('@assets/images/Image-Placeholder.png')}
-        />
-        <View style={styles.itemContentContainer}>
-          <View style={styles.itemDetailsContainer}>
-            <View style={styles.itemTitleContainer}>
-              <Text numberOfLines={3} style={styles.itemTitleText}>
-                {item.prod_name}
-              </Text>
-              {!!item.prod_desc && (
-                <Text numberOfLines={2} style={styles.itemDescriptionText}>
-                  {item.prod_desc}
-                </Text>
-              )}
-            </View>
-            <View style={styles.itemPriceContainer}>
-              <Text category="h5">{`$ ${item.prod_price}`}</Text>
-            </View>
+    <Layout style={styles.container}>
+      <ParallaxScrollView
+        backgroundColor="#E55D05"
+        contentBackgroundColor="#E55D05"
+        parallaxHeaderHeight={item.prod_desc ? 290 : 260}
+        stickyHeaderHeight={60}
+        renderFixedHeader={() => (
+          <CloseButton shadow position="headerRight" onPress={onPressClose} />
+        )}
+        renderStickyHeader={() => (
+          <View style={styles.parallaxTitleContainer}>
+            <Text numberOfLines={1} style={styles.itemTitleText}>
+              {item.prod_name}
+            </Text>
           </View>
+        )}
+        renderForeground={() => (
+          <>
+            <FastImage
+              source={{
+                uri: item.img_file?.[0],
+              }}
+              style={styles.itemImage}
+              resizeMode={FastImage.resizeMode.contain}
+              fallback
+              defaultSource={require('@assets/images/Image-Placeholder.png')}
+            />
+            <View style={styles.itemDetailsContainer}>
+              <View style={styles.itemTitleContainer}>
+                <Text numberOfLines={2} style={styles.itemTitleText}>
+                  {item.prod_name}
+                </Text>
+                {!!item.prod_desc && (
+                  <Text numberOfLines={2} style={styles.itemDescriptionText}>
+                    {item.prod_desc}
+                  </Text>
+                )}
+              </View>
+              <View style={styles.itemPriceContainer}>
+                <Text category="h5">{`$ ${Number(item.prod_price).toFixed(
+                  2,
+                )}`}</Text>
+              </View>
+            </View>
+          </>
+        )}>
+        <View style={styles.itemContentContainer}>
           <Divider />
           {condiments.map((condimentGroup, index) =>
             renderCondimentGroup(condimentGroup, index),
           )}
         </View>
-      </ScrollView>
+      </ParallaxScrollView>
+      <View style={styles.bottomContainer}>
+        <View style={styles.quantityContainer}>
+          <View style={styles.quantityView}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={onPressMinusQuantity}>
+              <MaterialIcons
+                name={'remove-circle-outline'}
+                size={28}
+                color={'#FFFFFF'}
+              />
+            </TouchableOpacity>
+            <Text category="s1">{quantity}</Text>
+            <TouchableOpacity activeOpacity={0.7} onPress={onPressAddQuantity}>
+              <MaterialIcons
+                name={'add-circle-outline'}
+                size={28}
+                color={'#FFFFFF'}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.addToCartContainer}>
+          <Button
+            status="control"
+            appearance="outline"
+            activeOpacity={0.7}
+            onPress={onPressAddToCart}>
+            Add to Cart
+          </Button>
+        </View>
+      </View>
     </Layout>
   );
 };
 
 export default Item;
-0;

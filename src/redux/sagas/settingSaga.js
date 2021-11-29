@@ -1,5 +1,4 @@
 import {takeLatest, all, put, call, fork} from 'redux-saga/effects';
-import HttpClient from '@utils/httpClient';
 import {
   fetchSettings,
   fetchMoods,
@@ -9,10 +8,10 @@ import {
   setLanguage,
 } from '@redux/slices/settingSlice';
 import {strings} from '@localizations/localization';
-
-const httpClient = HttpClient({
-  guestOAuthToken: true,
-});
+import fetchMoodsAPI from '@apis/fetchMoods';
+import fetchOutletsAPI from '@apis/fetchOutlets';
+import fetchPromotionsAPI from '@apis/fetchPromotions';
+import fetchAnnouncementsAPI from '@apis/fetchAnnouncements';
 
 export default function* sagaWatcher() {
   yield all([
@@ -47,7 +46,13 @@ function* handleFetchMoods() {
   try {
     yield put(fetchMoods.request());
 
-    const {data} = yield call(() => httpClient.get('/mood/getmood'));
+    const [data, error] = yield call(() => fetchMoodsAPI());
+
+    if (error) {
+      console.log('fetchMoods', error);
+      yield put(fetchMoods.failure());
+      return;
+    }
 
     if (data?.code === 3001) {
       yield put(fetchMoods.success({moods: data.data}));
@@ -66,11 +71,18 @@ function* handleFetchOutlets() {
   try {
     yield put(fetchOutlets.request());
 
-    const {data} = yield call(() => httpClient.get('/outlet/getoutletlist'));
+    const [data, error] = yield call(() => fetchOutletsAPI());
+
+    if (error) {
+      console.log('fetchOutlets', error);
+      yield put(fetchOutlets.failure());
+      return;
+    }
 
     if (data?.code === 3001) {
       yield put(fetchOutlets.success({outlets: data.data}));
     } else {
+      console.log('fetchOutlets', data);
       yield put(fetchOutlets.failure());
     }
   } catch (error) {
@@ -86,18 +98,21 @@ function* handleFetchPromotions() {
     yield put(fetchPromotions.request());
 
     const params = {
-      limit: 0,
+      limit: 5,
     };
 
-    const {data} = yield call(() =>
-      httpClient.get('/products/getpromotion', {
-        params,
-      }),
-    );
+    const [data, error] = yield call(() => fetchPromotionsAPI(params));
+
+    if (error) {
+      console.log('fetchPromotions', error);
+      yield put(fetchPromotions.failure());
+      return;
+    }
 
     if (data?.code === 3001) {
       yield put(fetchPromotions.success({promotions: data.data}));
     } else {
+      console.log('fetchPromotions', data);
       yield put(fetchPromotions.failure());
     }
   } catch (error) {
@@ -113,18 +128,21 @@ function* handleFetchAnnouncements() {
     yield put(fetchAnnouncements.request());
 
     const params = {
-      limit: 0,
+      limit: 5,
     };
 
-    const {data} = yield call(() =>
-      httpClient.get('/insta/getMediaList', {
-        params,
-      }),
-    );
+    const [data, error] = yield call(() => fetchAnnouncementsAPI(params));
+
+    if (error) {
+      console.log('fetchAnnouncements', error);
+      yield put(fetchAnnouncements.failure());
+      return;
+    }
 
     if (data?.code === 3001) {
       yield put(fetchAnnouncements.success({announcements: data.data}));
     } else {
+      console.log('fetchAnnouncements', data);
       yield put(fetchAnnouncements.failure());
     }
   } catch (error) {

@@ -63,6 +63,11 @@ const useStyles = () => {
       lineHeight: 20,
       marginBottom: 20,
     },
+    label: {
+      fontSize: 11,
+      lineHeight: 20,
+      paddingLeft: 3,
+    },
   });
 };
 

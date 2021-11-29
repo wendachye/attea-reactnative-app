@@ -21,10 +21,7 @@ const Subheader = () => {
   const renderSubheader = () => {
     return (
       <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.subheaderButton}
-          activeOpacity={0.7}
-          onPress={onPressSignIn}>
+        <TouchableOpacity disabled style={styles.subheaderButton}>
           <Text category="s2">{`Points: ${user.totalPoints}`}</Text>
         </TouchableOpacity>
       </View>

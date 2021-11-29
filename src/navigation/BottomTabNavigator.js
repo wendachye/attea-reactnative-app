@@ -3,9 +3,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import Home from '@screens/Home/Home';
-// import Voucher from '@screens/Voucher/Voucher';
+import Voucher from '@screens/Voucher/Voucher';
 import Menu from '@screens/Menu/Menu';
-// import Cart from '@screens/Cart/Cart';
+import Cart from '@screens/Cart/Cart';
 import Profile from '@screens/Profile/Profile';
 import {strings} from '@localizations/localization';
 
@@ -15,9 +15,9 @@ const BottomTabNavigator = () => {
   const {language} = useSelector(state => state.settings);
 
   return (
-    <BottomTab.Navigator>
+    <BottomTab.Navigator screenOptions={{headerShown: false}}>
       <BottomTab.Screen
-        name="Home"
+        name="home"
         component={Home}
         options={{
           title: strings.getString('home', language),
@@ -32,10 +32,11 @@ const BottomTabNavigator = () => {
           },
         }}
       />
-      {/* <BottomTab.Screen
-        name="Voucher"
+      <BottomTab.Screen
+        name="voucher"
         component={Voucher}
         options={{
+          title: strings.getString('voucher', language),
           tabBarIcon: ({focused, color, size}) => {
             return (
               <MaterialCommunityIcons
@@ -46,9 +47,9 @@ const BottomTabNavigator = () => {
             );
           },
         }}
-      /> */}
+      />
       <BottomTab.Screen
-        name="Menu"
+        name="menu"
         component={Menu}
         options={{
           title: strings.getString('menu', language),
@@ -63,10 +64,11 @@ const BottomTabNavigator = () => {
           },
         }}
       />
-      {/* <BottomTab.Screen
-        name="Cart"
+      <BottomTab.Screen
+        name="cart"
         component={Cart}
         options={{
+          title: strings.getString('cart', language),
           tabBarIcon: ({focused, color, size}) => {
             return (
               <MaterialCommunityIcons
@@ -77,9 +79,9 @@ const BottomTabNavigator = () => {
             );
           },
         }}
-      /> */}
+      />
       <BottomTab.Screen
-        name="Profile"
+        name="profile"
         component={Profile}
         options={{
           title: strings.getString('profile', language),

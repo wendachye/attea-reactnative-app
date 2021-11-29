@@ -7,13 +7,10 @@ import {useForm, Controller} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import Header from '@components/Header/Header';
-import HttpClient from '@utils/httpClient';
-import useGloabalStyles from '@styles/styles';
+import forgetPasswordAPI from '@apis/forgetPassword';
+import useGlobalStyles from '@styles/styles';
 import useStyles from './ForgotPassword.Styles';
 
-const httpClient = HttpClient({
-  guestOAuthToken: true,
-});
 const formSchema = yup.object().shape({
   email: yup
     .string()
@@ -23,7 +20,7 @@ const formSchema = yup.object().shape({
 
 const ForgotPassword = props => {
   const {navigation} = props;
-  const gloabalStyles = useGloabalStyles();
+  const globalStyles = useGlobalStyles();
   const styles = useStyles();
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,43 +31,37 @@ const ForgotPassword = props => {
     resolver: yupResolver(formSchema),
   });
 
-  const onPressBackButton = () => {
+  const onPressCloseButton = () => {
     navigation.goBack();
     navigation.navigate('sign-in');
   };
 
   const resetPassword = async formData => {
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const params = {
-        email: formData.email,
-      };
+    const params = {
+      email: formData.email,
+    };
 
-      const {data} = await httpClient.post('/customer/forgetPassword', params);
+    const [data] = await forgetPasswordAPI(params);
 
-      if (data?.code === 3001) {
-        setModalMessage('Password reset successfully');
-        setModalSuccessButton(true);
-        setModalVisible(true);
-        return;
-      }
+    setLoading(false);
 
-      if (data?.code === 1008) {
-        setModalMessage("This email doesn't belong to any account");
-        setModalVisible(true);
-        return;
-      }
-
-      setModalMessage('Something went wrong');
+    if (data?.code === 3001) {
+      setModalMessage('Password reset successfully');
+      setModalSuccessButton(true);
       setModalVisible(true);
-    } catch (error) {
-      console.log('resetPassword', error);
-      setModalMessage('Something went wrong');
-      setModalVisible(true);
-    } finally {
-      setLoading(false);
+      return;
     }
+
+    if (data?.code === 1008) {
+      setModalMessage("This email doesn't belong to any account");
+      setModalVisible(true);
+      return;
+    }
+
+    setModalMessage('Something went wrong');
+    setModalVisible(true);
   };
 
   const loadingIndicator = accessoryLeftProps => {
@@ -109,17 +100,19 @@ const ForgotPassword = props => {
   };
 
   return (
-    <SafeAreaView style={gloabalStyles.flex}>
+    <SafeAreaView style={globalStyles.flex}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={gloabalStyles.flexGrow}>
+        contentContainerStyle={globalStyles.flexGrow}>
         <ImageBackground
           source={require('@assets/images/Background-SignIn.png')}
           style={styles.backgroundImage}>
           <Header
             type="modal"
             color="secondary"
-            onPressBackButton={onPressBackButton}
+            isCloseButton
+            closeButtonPosition="right"
+            onPressCloseButton={onPressCloseButton}
           />
           <View style={styles.logoImageContainer}>
             <Image
@@ -139,6 +132,13 @@ const ForgotPassword = props => {
                       autoCompleteType="email"
                       keyboardType="email-address"
                       textContentType="emailAddress"
+                      label={evaProps =>
+                        !!value && (
+                          <Text status="primary" style={styles.label}>
+                            Email Address
+                          </Text>
+                        )
+                      }
                       placeholder="Email Address"
                       value={value}
                       onChange={onChange}
