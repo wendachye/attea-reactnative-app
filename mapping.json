@@ -1,0 +1,163 @@
+{
+  "strict": {
+    "text-heading-1-font-size": 36,
+    "text-heading-1-font-weight": "800",
+    "text-heading-2-font-size": 32,
+    "text-heading-2-font-weight": "800",
+    "text-heading-3-font-size": 28,
+    "text-heading-3-font-weight": "800",
+    "text-heading-4-font-size": 24,
+    "text-heading-4-font-weight": "700",
+    "text-heading-5-font-size": 20,
+    "text-heading-5-font-weight": "600",
+    "text-heading-6-font-size": 16,
+    "text-heading-6-font-weight": "500",
+    "text-subtitle-1-font-size": 16,
+    "text-subtitle-1-font-weight": "600",
+    "text-subtitle-2-font-size": 14,
+    "text-subtitle-2-font-weight": "600",
+    "text-paragraph-1-font-size": 16,
+    "text-paragraph-1-font-weight": "400",
+    "text-paragraph-2-font-size": 14,
+    "text-paragraph-2-font-weight": "400",
+    "text-caption-1-font-size": 12,
+    "text-caption-1-font-weight": "400",
+    "text-caption-2-font-size": 10,
+    "text-caption-2-font-weight": "400",
+    "text-label-font-size": 12,
+    "text-label-font-weight": "800"
+  },
+  "components": {
+    "Input": {
+      "meta": {},
+      "appearances": {
+        "default": {
+          "mapping": {},
+          "variantGroups": {
+            "status": {
+              "basic": {
+                "borderColor": "border-basic-color-5",
+                "backgroundColor": "#FFFFFF",
+                "textColor": "#000000",
+                "state": {
+                  "focused": {
+                    "borderColor": "color-primary-500",
+                    "backgroundColor": "#FFFFFF"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Calendar": {
+      "meta": {},
+      "appearances": {
+        "default": {
+          "mapping": {
+            "borderColor": "border-basic-color-5",
+            "titleColor": "color-primary-500",
+            "iconTintColor": "color-primary-500"
+          }
+        }
+      }
+    },
+    "CalendarCell": {
+      "meta": {},
+      "appearances": {
+        "default": {
+          "mapping": {
+            "contentTextColor": "#000000",
+            "state": {
+              "selected": {
+                "contentBackgroundColor": "transparent",
+                "contentBorderColor": "color-primary-500",
+                "contentTextColor": "color-primary-500"
+              },
+              "today": {
+                "contentBorderColor": "color-basic-transparent-default-border",
+                "contentBackgroundColor": "color-basic-transparent-default"
+              },
+              "disabled": {
+                "contentTextColor": "border-basic-color-5"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Datepicker": {
+      "meta": {},
+      "appearances": {
+        "default": {
+          "mapping": {},
+          "variantGroups": {
+            "status": {
+              "basic": {
+                "textColor": "#000000",
+                "placeholderColor": "border-basic-color-5",
+                "borderColor": "border-basic-color-5",
+                "backgroundColor": "#FFFFFF",
+                "state": {
+                  "active": {
+                    "borderColor": "color-primary-500",
+                    "backgroundColor": "#FFFFFF",
+                    "textColor": "#000000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Popover": {
+      "meta": {},
+      "appearances": {
+        "default": {
+          "mapping": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      }
+    },
+    "Select": {
+      "meta": {},
+      "appearances": {
+        "default": {
+          "mapping": {},
+          "variantGroups": {
+            "status": {
+              "basic": {
+                "borderColor": "border-basic-color-5",
+                "backgroundColor": "#FFFFFF",
+                "textColor": "#000000",
+                "state": {
+                  "active": {
+                    "backgroundColor": "#FFFFFF"
+                  }
+                }
+              }
+            },
+            "size": {
+              "medium": {
+                "textFontWeight": "400"
+              }
+            }
+          }
+        }
+      }
+    },
+    "SelectOption": {
+      "meta": {},
+      "appearances": {
+        "default": {
+          "mapping": {
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      }
+    }
+  }
+}
